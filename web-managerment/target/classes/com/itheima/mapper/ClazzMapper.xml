@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itheima.mapper.ClazzMapper">
+
+    <!-- 查询班级信息（包含班主任姓名） -->
+    <select id="list" resultType="com.itheima.pojo.Clazz">
+        select
+            c.id,
+            c.name,
+            c.room,
+            c.begin_date,
+            c.end_date,
+            c.master_id,
+            e.name as master_name,
+            c.subject,
+            c.create_time,
+            c.update_time
+        from clazz c
+                 join emp e on e.id = c.master_id
+    </select>
+
+</mapper>

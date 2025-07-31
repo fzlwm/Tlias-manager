@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itheima.mapper.EmpMapper">
+
+    <!-- 动态查询员工列表（参数可选） -->
+    <select id="list" resultType="com.itheima.pojo.Emp">
+        select id, username, password, name, gender,
+        phone, job, salary, image, entry_date,
+        dept_id, create_time, update_time
+        from emp
+        <where>
+            <!-- 姓名模糊查询（可选） -->
+            <if test="name != null and name != ''">
+                and name like concat('%', #{name}, '%')
+            </if>
+
+            <!-- 入职日期范围查询（可选） -->
+            <if test="begin != null and end != null">
+                and entry_date between #{begin} and #{end}
+            </if>
+
+            <!-- 性别查询（可选） -->
+            <if test="gender != null and gender != ''">
+                and gender = #{gender}
+            </if>
+        </where>
+    </select>
+
+    <insert id="Insert" >
+        insert into emp(username, name, gender,job,salary,
+                        image, entry_date,dept_id,phone,create_time, update_time)
+        values(#{username},#{name},#{gender},#{job},#{salary},
+               #{image},#{entryDate},#{deptId},#{phone},#{createTime},#{updateTime})
+    </insert>
+
+    <delete id="deleteEmp">
+            delete from emp
+            where id in
+            <foreach collection="list" item="id" separator="," open="(" close=")">
+                   #{id}
+            </foreach>
+    </delete>
+    <update id="update">
+        update emp
+        set
+        username = #{username},
+        name = #{name},
+        gender = #{gender},
+        <if test="password != null">password = #{password},</if>
+        <if test="job != null">job = #{job},</if>
+        <if test="salary != null">salary = #{salary},</if>
+        <if test="image != null">image = #{image},</if>
+        <if test="entryDate != null">entry_date = #{entryDate},</if>
+        <if test="updateTime != null">update_time = #{updateTime},</if>
+        <if test="deptId != null">dept_id = #{deptId},</if>
+        <if test="phone != null and phone != ''">phone = #{phone},</if>
+        update_time = #{updateTime}
+        WHERE id = #{id}
+    </update>
+    <select id="empJobData" resultType="java.util.Map">
+        select count(0) as sum,
+               case
+                   when job=1 then '班主任'
+                   when job=2 then '讲师'
+                   when job=3 then '学工主管'
+                   when job=4 then '教研主管'
+                   when job=5 then '咨询师'
+                   else '其他职位'
+                   end as jobName
+        from emp
+        group by job
+        order by sum
+    </select>
+    <select id="empGenderData" resultType="java.util.Map">
+        select count(0) as value,
+               case
+                   when gender=1 then '男性员工'
+                   when gender=2 then '女性员工'
+                   else '其他'
+                   end as name
+        from emp
+        group by gender
+        order by value
+    </select>
+
+</mapper>
