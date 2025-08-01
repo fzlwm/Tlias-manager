@@ -67,6 +67,11 @@
             <version>3.0.4</version>
             <scope>test</scope>
         </dependency>
+<!--        Spring 快启动的Aop-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
 <!--        JWT-->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
